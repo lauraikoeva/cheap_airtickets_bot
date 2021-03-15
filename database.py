@@ -28,35 +28,35 @@ class Database:
         if record == []:
             return False
         return True
-    
+        
     def get_last_to_for_user(self, user_id):
-        """Показывает id города, в который пользователь искал билет в последний раз"""
+        """Показывает iata города, в который пользователь искал билет в последний раз"""
         query = f"SELECT last_to FROM users WHERE user_id = {user_id};"
         record = self.__query(query, commit=False)[0][0]
         return record
-        
+
     def get_last_from_for_user(self, user_id):
-        """Показывает id города, из которого пользователь искал билет в последний раз"""
+        """Показывает iata города, из которого пользователь искал билет в последний раз"""
         query = f"SELECT last_from FROM users WHERE user_id = {user_id};"
         record = self.__query(query, commit=False)[0][0]
         return record
 
     def get_last_date_for_user(self, user_id):
-        """Показывает дату, на которую пользователь искал билет в последний раз"""
+        """Показывает iata города, из которого пользователь искал билет в последний раз"""
         query = f"SELECT last_date FROM users WHERE user_id = {user_id};"
         record = self.__query(query, commit=False)[0][0]
         return record
-    
-    def set_last_to_for_user(self, user_id, city_id):
-        """Задает id города, в который пользователь искал билет в последний раз"""
-        city_id = str(city_id)
-        query = f"UPDATE users SET last_to = {city_id} WHERE user_id = {user_id};"
+
+    def set_last_to_for_user(self, user_id, city_iata):
+        """Задает iata города, в который пользователь искал билет в последний раз"""
+        city_iata = str(city_iata) if city_iata == "Null" else f"'{city_iata}'"
+        query = f"UPDATE users SET last_to = {city_iata} WHERE user_id = {user_id};"
         self.__query(query)
 
-    def set_last_from_for_user(self, user_id, city_id):
-        """Задает id города, из которого пользователь искал билет в последний раз"""
-        city_id = str(city_id)
-        query = f"UPDATE users SET last_from = {city_id} WHERE user_id = {user_id};"
+    def set_last_from_for_user(self, user_id, city_iata):
+        """Задает iata города, из которого пользователь искал билет в последний раз"""
+        city_iata = str(city_iata) if city_iata == "Null" else f"'{city_iata}'"
+        query = f"UPDATE users SET last_from = {city_iata} WHERE user_id = {user_id};"
         self.__query(query)
 
     def set_last_date_for_user(self, user_id, date):
@@ -67,10 +67,10 @@ class Database:
 
     #--------CITY--------#
 
-    def city_exist(self, city_id = None, city_name = None):
-        """Проверяет существование города в базе данных. Если указаны и city_id и city_name поиск идет по city_id"""
-        if city_id is not None:
-            query = f"SELECT * FROM cities WHERE id = {city_id};"
+    def city_exist(self, city_iata = None, city_name = None):
+        """Проверяет существование города в базе данных. Если указаны и city_iata и city_name поиск идет по city_iata"""
+        if city_iata is not None:
+            query = f"SELECT * FROM cities WHERE iata = '{city_iata}';"
         else:
             query = f"SELECT * FROM cities WHERE name = '{city_name}';"
         record = self.__query(query, commit=False)
@@ -84,16 +84,16 @@ class Database:
         record = [i[0].capitalize() for i in record]
         return record
     
-    def city_id_by_city_name(self, city_name):
+    def city_iata_by_city_name(self, city_name):
         if not self.city_exist(city_name=city_name):
             return None
-        query = f"SELECT id FROM cities WHERE name = '{city_name}';"
+        query = f"SELECT iata FROM cities WHERE name = '{city_name}';"
         record = self.__query(query, commit=False)[0][0]
         return record
-    
-    def city_name_by_city_id(self, city_id):
-        if not self.city_exist(city_id=city_id):
+
+    def city_name_by_city_iata(self, city_iata):
+        if not self.city_exist(city_iata=city_iata):
             return None
-        query = f"SELECT name FROM cities WHERE id = {city_id};"
+        query = f"SELECT name FROM cities WHERE iata = '{city_iata}';"
         record = self.__query(query, commit=False)[0][0]
-        return record
+        return record 
