@@ -21,6 +21,6 @@ def search(origin,destination,date):
     if response["success"]:
         for line in response["data"]:
             if line["depart_date"] == data["beginning_of_period"]:
-                return (line["value"], line["gate"])
+                return line
     return False
  
